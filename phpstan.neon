@@ -1,0 +1,10 @@
+parameters:
+    level: 5
+    paths:
+        - app
+    excludePaths:
+        - vendor
+        - node_modules
+        - storage
+        - bootstrap/cache
+    treatPhpDocTypesAsCertain: false
