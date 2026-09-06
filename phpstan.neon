@@ -4,7 +4,7 @@ parameters:
         - app
     excludePaths:
         - vendor
-        - node_modules
+        - node_modules (?)
         - storage
         - bootstrap/cache
     treatPhpDocTypesAsCertain: false
