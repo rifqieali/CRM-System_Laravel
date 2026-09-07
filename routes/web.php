@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Companies\Form as CompanyForm;
+use App\Livewire\Companies\Index as CompaniesIndex;
+use App\Livewire\Companies\Show as CompanyShow;
 use App\Livewire\Contacts\Form as ContactForm;
 use App\Livewire\Contacts\Index as ContactsIndex;
 use App\Livewire\Contacts\Show as ContactShow;
@@ -69,4 +72,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('contacts/create', ContactForm::class)->name('contacts.create');
     Route::get('contacts/{contact}', ContactShow::class)->name('contacts.show');
     Route::get('contacts/{contact}/edit', ContactForm::class)->name('contacts.edit');
+
+    Route::get('companies', CompaniesIndex::class)->name('companies.index');
+    Route::get('companies/create', CompanyForm::class)->name('companies.create');
+    Route::get('companies/{company}', CompanyShow::class)->name('companies.show');
+    Route::get('companies/{company}/edit', CompanyForm::class)->name('companies.edit');
 });
