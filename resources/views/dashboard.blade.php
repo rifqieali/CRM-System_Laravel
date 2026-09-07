@@ -4,9 +4,13 @@
 
 @section('content')
     <div class="mb-6">
-        <h1 class="text-2xl font-semibold">Selamat datang, {{ $greetingName }}</h1>
+        <h1 class="text-2xl font-semibold">{{ $greeting }}, {{ $greetingName }}</h1>
         <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-            Berikut ringkasan aktivitas CRM Anda.
+            @if ($dealsClosingThisWeek > 0)
+                Anda punya <span class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $dealsClosingThisWeek }}</span> deals yang closing minggu ini.
+            @else
+                Tidak ada deal yang closing minggu ini.
+            @endif
         </p>
     </div>
 
@@ -46,7 +50,7 @@
                             <x-badge :color="match($activity->type) {
                                     'call' => 'blue',
                                     'email' => 'amber',
-                                    'meeting' => 'emerald',
+                                    'meeting' => 'purple',
                                     'task' => 'zinc',
                                     default => 'zinc',
                                 }">
@@ -55,7 +59,16 @@
                             <div class="flex-1">
                                 <p class="text-sm font-medium">{{ $activity->subject }}</p>
                                 <p class="text-xs text-zinc-500">
-                                    {{ $activity->user->name }} · {{ $activity->created_at->diffForHumans() }}
+                                    @if ($activity->activityable)
+                                        @if ($activity->activityable instanceof \App\Models\Contact)
+                                            {{ $activity->activityable->first_name }} {{ $activity->activityable->last_name }}
+                                        @elseif ($activity->activityable instanceof \App\Models\Company)
+                                            {{ $activity->activityable->name }}
+                                        @elseif ($activity->activityable instanceof \App\Models\Deal)
+                                            {{ $activity->activityable->name }}
+                                        @endif
+                                    @endif
+                                    · {{ $activity->user?->name ?? '—' }} · {{ $activity->created_at->diffForHumans() }}
                                 </p>
                             </div>
                         </li>
