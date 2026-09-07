@@ -1,0 +1,37 @@
+@props([
+    'label' => null,
+    'name',
+    'options' => [],
+    'placeholder' => null,
+    'required' => false,
+])
+
+<div class="space-y-1">
+    @if ($label)
+        <label for="{{ $name }}" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {{ $label }}
+            @if ($required)<span class="text-red-500">*</span>@endif
+        </label>
+    @endif
+
+    <select
+        name="{{ $name }}"
+        id="{{ $name }}"
+        {{ $required ? 'required' : '' }}
+        {{ $attributes->merge(['class' => 'block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800' . ($errors->has($name) ? ' border-red-500' : '')]) }}
+    >
+        @if ($placeholder)
+            <option value="">{{ $placeholder }}</option>
+        @endif
+
+        @foreach ($options as $value => $labelOption)
+            <option value="{{ $value }}" {{ (string) old($name, $selected ?? '') === (string) $value ? 'selected' : '' }}>
+                {{ $labelOption }}
+            </option>
+        @endforeach
+    </select>
+
+    @error($name)
+        <p class="text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
