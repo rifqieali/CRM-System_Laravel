@@ -15,6 +15,9 @@ use App\Livewire\Companies\Show as CompanyShow;
 use App\Livewire\Contacts\Form as ContactForm;
 use App\Livewire\Contacts\Index as ContactsIndex;
 use App\Livewire\Contacts\Show as ContactShow;
+use App\Livewire\Deals\Form as DealForm;
+use App\Livewire\Deals\Index as DealsIndex;
+use App\Livewire\Deals\Show as DealShow;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -77,4 +80,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('companies/create', CompanyForm::class)->name('companies.create');
     Route::get('companies/{company}', CompanyShow::class)->name('companies.show');
     Route::get('companies/{company}/edit', CompanyForm::class)->name('companies.edit');
+
+    Route::get('deals', DealsIndex::class)->name('deals.index');
+    Route::get('deals/create', DealForm::class)->name('deals.create');
+    Route::get('deals/{deal}', DealShow::class)->name('deals.show');
+    Route::get('deals/{deal}/edit', DealForm::class)->name('deals.edit');
 });
