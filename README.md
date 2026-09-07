@@ -1,59 +1,168 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CRM System — Core Foundation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sub-project #1 of 6 for a Laravel 11 CRM. Ships authentication, RBAC, and full CRUD for Contacts, Companies, Deals, Activities, Notes, and Tags. Designed to be extended by sub-projects #2–6 (Sales Pipeline, Custom Fields, Email Integration, Lead Scoring, Analytics).
 
-## About Laravel
+> **Status:** Sub-Project #1 (Core Foundation) shipped. See `docs/superpowers/specs/2026-09-06-crm-core-foundation-design.md` for the design spec.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework:** Laravel 11 (PHP 8.3)
+- **Frontend:** Livewire 3 + Tailwind CSS 3 + Alpine.js
+- **Database:** MySQL 8 (production) / SQLite (local dev)
+- **Auth/RBAC:** Spatie Laravel Permission
+- **Testing:** Pest 3
+- **Quality:** Laravel Pint (PSR-12 preset), Larastan (level 5)
+- **CI:** GitHub Actions (`.github/workflows/ci.yml`)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.3+ with extensions: `mbstring`, `dom`, `fileinfo`, `mysql` or `sqlite3`
+- Node.js 20+
+- Composer 2+
+- MySQL 8 (production) or SQLite (local dev only)
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Setup
 
-### Premium Partners
+### Local development (SQLite, fastest)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/rifqieali/CRM-System_Laravel.git
+cd CRM-System_Laravel
+composer install
+cp .env.example .env
+php artisan key:generate
+touch database/database.sqlite
+php artisan migrate:fresh --seed
+npm install
+npm run build
+php artisan serve
+```
 
-## Contributing
+Open <http://localhost:8000>. Login with one of the seeded users below.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Production-ish (MySQL)
 
-## Code of Conduct
+```bash
+# 1. Create database & user in MySQL
+mysql -u root -p -e "CREATE DATABASE crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p -e "CREATE USER 'crm'@'localhost' IDENTIFIED BY 'secret';"
+mysql -u root -p -e "GRANT ALL ON crm.* TO 'crm'@'localhost'; FLUSH PRIVILEGES;"
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 2. In .env, set:
+#    DB_CONNECTION=mysql
+#    DB_HOST=127.0.0.1
+#    DB_DATABASE=crm
+#    DB_USERNAME=crm
+#    DB_PASSWORD=secret
 
-## Security Vulnerabilities
+# 3. Run install steps
+composer install
+npm install
+npm run build
+php artisan migrate:fresh --seed
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
+
+## Seeded dev users
+
+All use password `password`.
+
+| Email | Role | Manager | Notes |
+|-------|------|---------|-------|
+| `admin@crm.test` | Admin | — | Full access; can manage users & roles |
+| `manager@crm.test` | Manager | — | Full record access; no user/role management |
+| `sales1@crm.test` | Sales | manager@crm.test | Sees own + `sales2` records (team scope) |
+| `sales2@crm.test` | Sales | manager@crm.test | Sees own + `sales1` records (team scope) |
+| `sales3@crm.test` | Sales | — | Sees only own records (no manager) |
+
+Ownership-scoping policy: Sales see records where `owner_id = self.id` OR `owner.manager_id = self.manager_id`.
+
+---
+
+## Quality gates
+
+```bash
+composer pint:test     # Laravel Pint (PSR-12 style)
+composer stan          # Larastan static analysis (level 5)
+composer test          # Pest test suite
+```
+
+All three must pass before merging. CI runs them on every push and PR to `main`.
+
+---
+
+## Project structure
+
+```
+app/
+├── Http/Controllers/    # DashboardController, ProfileController
+├── Http/Requests/       # FormRequest per entity
+├── Livewire/            # Livewire 3 components (Contacts, Companies, Deals, Activities, Notes, Tags, GlobalSearch)
+├── Models/              # Eloquent models with ScopedToUser trait
+├── Policies/            # Authorization policies per entity
+database/
+├── factories/           # id_ID locale faker
+├── migrations/          # 7 schema migrations
+├── seeders/             # RolePermissionSeeder, UserSeeder
+resources/views/
+├── components/          # Reusable Blade components
+├── layouts/             # app.blade.php + partials (sidebar, topnav)
+├── livewire/            # Livewire component views
+├── errors/              # 404, 403, 500
+routes/web.php
+tests/Feature/          # Feature tests
+tests/Unit/             # Unit tests
+.github/workflows/ci.yml
+docs/superpowers/specs/ # Design specs
+```
+
+---
+
+## Routes
+
+| URL | Handler |
+|-----|---------|
+| `GET /` | `DashboardController` (auth) |
+| `GET /contacts` | `Livewire\Contacts\Index` |
+| `GET /contacts/{id}` | `Livewire\Contacts\Show` |
+| `GET /companies` | `Livewire\Companies\Index` |
+| `GET /deals` | `Livewire\Deals\Index` |
+| `GET /activities` | `Livewire\Activities\Index` |
+| `GET /notes` | `Livewire\Notes\Index` |
+| `GET /tags` | `Livewire\Tags\Index` |
+| `GET /profile` | `ProfileController` |
+| Auth routes | `/login`, `/register`, `/forgot-password`, `/reset-password/{token}`, `/verify-email` |
+
+Global search lives in the top nav (no dedicated route — `Livewire\GlobalSearch` mounted in `layouts.partials.topnav`).
+
+---
+
+## Locale
+
+Application UI is in Bahasa Indonesia (`APP_LOCALE=id`). All form labels, validation messages, navigation, and dashboard copy are Indonesian. Validation messages translate the most common rules (`required`, `email`, `unique`, `min`, `max`, `confirmed`, `string`, `numeric`, `same`, `between`). Untranslated rule keys fall back to English. Custom translations live in `lang/id/`.
+
+---
+
+## Out of scope (deferred sub-projects)
+
+- Sub-Project #2: Sales Pipeline (Kanban + drag-drop)
+- Sub-Project #3: Custom fields & dynamic forms
+- Sub-Project #4: Email integration (IMAP/SMTP)
+- Sub-Project #5: Lead scoring & automation
+- Sub-Project #6: Advanced analytics & forecasting
+- Dark mode (deferred to sub-project #2)
+- Bulk delete (deferred to first post-#1 sub-project)
+- File attachments on Notes/Activities (deferred to sub-project #4)
+
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT (inherited from Laravel framework).
