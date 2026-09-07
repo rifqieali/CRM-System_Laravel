@@ -31,7 +31,11 @@
            class="rounded-md px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 {{ request()->routeIs('deals.*') ? 'bg-zinc-100 font-medium dark:bg-zinc-800' : '' }}">
             Deals
         </a>
-        <a href="#" class="rounded-md px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800">Activities</a>
+        <a href="{{ route('activities.index') }}"
+           wire:navigate
+           class="rounded-md px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 {{ request()->routeIs('activities.*') ? 'bg-zinc-100 font-medium dark:bg-zinc-800' : '' }}">
+            Activities
+        </a>
         <a href="#" class="rounded-md px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800">Tags</a>
 
         @if ($isAdmin)

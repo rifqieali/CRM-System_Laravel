@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Activities\Index as ActivitiesIndex;
 use App\Livewire\Companies\Form as CompanyForm;
 use App\Livewire\Companies\Index as CompaniesIndex;
 use App\Livewire\Companies\Show as CompanyShow;
@@ -85,4 +86,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('deals/create', DealForm::class)->name('deals.create');
     Route::get('deals/{deal}', DealShow::class)->name('deals.show');
     Route::get('deals/{deal}/edit', DealForm::class)->name('deals.edit');
+
+    Route::get('activities', ActivitiesIndex::class)->name('activities.index');
 });
