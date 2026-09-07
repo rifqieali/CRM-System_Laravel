@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Contacts\Form as ContactForm;
+use App\Livewire\Contacts\Index as ContactsIndex;
+use App\Livewire\Contacts\Show as ContactShow;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -61,4 +64,9 @@ Route::middleware(['auth'])->group(function (): void {
 // Dashboard (requires auth + verified email)
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+
+    Route::get('contacts', ContactsIndex::class)->name('contacts.index');
+    Route::get('contacts/create', ContactForm::class)->name('contacts.create');
+    Route::get('contacts/{contact}', ContactShow::class)->name('contacts.show');
+    Route::get('contacts/{contact}/edit', ContactForm::class)->name('contacts.edit');
 });
