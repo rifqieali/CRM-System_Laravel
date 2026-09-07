@@ -19,6 +19,8 @@ use App\Livewire\Contacts\Show as ContactShow;
 use App\Livewire\Deals\Form as DealForm;
 use App\Livewire\Deals\Index as DealsIndex;
 use App\Livewire\Deals\Show as DealShow;
+use App\Livewire\Notes\Index as NotesIndex;
+use App\Livewire\Tags\Index as TagsIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -88,4 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('deals/{deal}/edit', DealForm::class)->name('deals.edit');
 
     Route::get('activities', ActivitiesIndex::class)->name('activities.index');
+
+    Route::get('notes', NotesIndex::class)->name('notes.index');
+    Route::get('tags', TagsIndex::class)->name('tags.index');
 });
