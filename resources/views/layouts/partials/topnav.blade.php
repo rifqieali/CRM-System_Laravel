@@ -1,9 +1,6 @@
 <header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-4 sm:px-6 lg:px-8 dark:border-zinc-800 dark:bg-zinc-900">
     <div class="flex flex-1 items-center">
-        <input type="search"
-               placeholder="Cari contacts, companies, deals..."
-               class="w-full max-w-md rounded-md border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-700 dark:bg-zinc-800"
-               disabled>
+        <livewire:global-search />
     </div>
 
     <div x-data="{ open: false }" class="relative ml-4">
